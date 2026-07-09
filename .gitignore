@@ -112,3 +112,5 @@
 /UnityEditor.UI.csproj
 /UnityEngine.TestRunner.csproj
 /UnityEngine.UI.csproj
+/Library/StateCache
+/Library/UIElements/EditorWindows/UnityEditor.ProjectSettingsWindow.pref
