@@ -8,6 +8,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     [SerializeField] int HP;
     [SerializeField] float speed;
+    [SerializeField] float hitFlashTime = 0.1f;
 
     Color colorOrig;
     Transform player;
@@ -82,7 +83,7 @@ public class enemyAI : MonoBehaviour, IDamage
         }
 
         model.material.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(hitFlashTime);
         model.material.color = colorOrig;                                    // returns enemy to its original color
     }
 }
