@@ -1,75 +1,66 @@
 using UnityEngine;
+using TMPro;
 
 public class gamemanager : MonoBehaviour
 {
-    public static gamemanager instance;
+    public static gamemanager instance;                                      // allows other scripts to access the manager
 
-    [SerializeField] GameObject menuActive;
-    [SerializeField] GameObject menuPause;
-    [SerializeField] GameObject menuWin;
+    [SerializeField] TMP_Text killCountText;
     [SerializeField] GameObject menuLose;
 
-    public bool isPaused;
+    public bool isGameOver;
     public GameObject player;
-    public playerController playerScript;
+    public playerHealth playerScript;
 
-    float timeScaleOrig;
+    int killCount;
 
-    int gameGoalCount;
     void Awake()
     {
-        instance = this;
-        timeScaleOrig = Time.timeScale;
-        player = GameObject.FindWithTag("Player");
-        playerScript = player.GetComponent<playerController>();
-    }
-    void Update()
-    {
-        if (Input.GetButtonDown("Cancel"))
-        {
-            if (menuActive == null)
-            {
-                statePause();
-                menuActive = menuPause;
-                menuActive.SetActive(true);
-            }
-            else
-            {
-                stateUnpause();
-            }
-        }
-    }
-    public void statePause()
-    {
-        isPaused = true;
-        Time.timeScale = 0;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-    public void stateUnpause()
-    {
-        isPaused = false;
-        Time.timeScale = timeScaleOrig;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        menuActive.SetActive(false);
-        menuActive = null;
-    }
-    public void updateGameGoal(int amount)
-    {
-        gameGoalCount += amount;
+        instance = this;                                                     // sets this object as the active manager before start
 
-        if (gameGoalCount <= 25)
+        player = GameObject.FindWithTag("Player");
+
+        if (player != null)
         {
-            statePause();
-            menuActive = menuWin;
-            menuActive.SetActive(true);
+            playerScript = player.GetComponent<playerHealth>();              // grabs the player health script for later use
         }
     }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        Time.timeScale = 1;
+        isGameOver = false;
+        updateKillUI();
+
+        if (menuLose != null)
+        {
+            menuLose.SetActive(false);
+        }
+    }
+
+    public void addKill()
+    {
+        killCount++;
+        updateKillUI();                                                      // refreshes the kill text after the value changes
+    }
+
+    void updateKillUI()
+    {
+        if (killCountText != null)
+        {
+            killCountText.text = "Kills: " + killCount.ToString();
+        }
+    }
+
     public void youLose()
     {
-        statePause();
-        menuActive = menuLose;
-        menuActive.SetActive(true);
+        isGameOver = true;
+        Time.timeScale = 0;                                                  // pauses the game when the player dies
+
+        if (menuLose != null)
+        {
+            menuLose.SetActive(true);
+        }
     }
 }
