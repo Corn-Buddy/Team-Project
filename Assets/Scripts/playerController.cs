@@ -7,28 +7,43 @@ public class playerController : MonoBehaviour
     [SerializeField] CharacterController controller;
 
     [Header("Movement")]
-    [SerializeField] float speed = 8f; // stores the player's movement speed
-    [SerializeField] float sprintMod = 1.8f; // stores the multiplier for the player's sprint speed
+    [SerializeField] float speed = 8f;
+    [SerializeField] float sprintMod = 1.8f;
 
     [Header("Jump")]
-    [SerializeField] float jumpSpeed = 3f; // stores the speed at which the player jumps
-    [SerializeField] int jumpMax = 2; // stores the maximum number of jumps the player can make
-    [SerializeField] float gravity = 9.81f; // stores the gravity value for the player
+    [SerializeField] float jumpSpeed = 15f;        // Increased - 3 was too weak
+    [SerializeField] int jumpMax = 2;
+    [SerializeField] float gravity = 25f;          // Stronger gravity feels better
 
     [Header("Combat")]
-    [SerializeField] int HP = 100; // stores the player's current health points
-    [SerializeField] int shootDamage = 25; // stores the amount of damage the player does per shot
-    [SerializeField] float shootRate = 0.25f; // stores the time between shots
-    [SerializeField] float shootDist = 100f; // stores the maximum distance the player can shoot
+    [SerializeField] int HP = 100;
+    [SerializeField] int shootDamage = 25;
+    [SerializeField] float shootRate = 0.25f;
+    [SerializeField] float shootDist = 100f;
     [SerializeField] LayerMask ignoreLayer;
 
-    Vector3 playerVel; // stores the player's current velocity
-    int jumpCount; // stores the number of jumps the player has made
-    float shootTimer; // stores the time since the last shot was fired
-    Vector3 moveDir; // stores the direction the player is moving in
-    int HPOrig; // stores the original HP value for reference
+    [Header("Stamina & Sprinting")]
+    [SerializeField] float maxStamina = 100f;
+    [SerializeField] float staminaRecoveryRate = 15f;
+    [SerializeField] float sprintStaminaCost = 20f;
 
-    private float currentSpeed;  // Used internally for sprinting
+    [Header("Dash")]
+    [SerializeField] float dashSpeed = 25f;
+    [SerializeField] float dashDuration = 0.2f;
+    [SerializeField] float dashStaminaCost = 35f;
+    [SerializeField] float dashCooldown = 1.2f;
+
+    Vector3 playerVel;
+    int jumpCount;
+    float shootTimer;
+    Vector3 moveDir;
+    int HPOrig;
+
+    private float currentSpeed;
+    private float currentStamina;
+    private float dashTimer;
+    private float dashCooldownTimer;
+    private bool isDashing;
 
     void Start()
     {
@@ -37,24 +52,33 @@ public class playerController : MonoBehaviour
 
         HPOrig = HP;
         currentSpeed = speed;
+        currentStamina = maxStamina;
     }
 
     void Update()
     {
         movement();
         sprint();
+        dash();
+        staminaManagement();
+        handleDash();
+
+        // Debug (only when pressed, not every frame)
+        if (InputSystem.actions.FindAction("Sprint")?.IsPressed() == true)
+            Debug.Log("Sprint Held");
+        if (InputSystem.actions.FindAction("Dash")?.triggered == true)
+            Debug.Log("DASH!");
     }
 
     void movement()
     {
         if (controller.isGrounded)
         {
-            playerVel.y = 0;
+            playerVel.y = 0f;
             jumpCount = 0;
         }
 
-        // New Input System - WASD movement
-        Vector2 input = InputSystem.actions.FindAction("Move").ReadValue<Vector2>();
+        Vector2 input = InputSystem.actions.FindAction("Move")?.ReadValue<Vector2>() ?? Vector2.zero;
         moveDir = transform.right * input.x + transform.forward * input.y;
 
         controller.Move(moveDir.normalized * currentSpeed * Time.deltaTime);
@@ -66,32 +90,22 @@ public class playerController : MonoBehaviour
 
         // Shooting
         shootTimer += Time.deltaTime;
-        if (InputSystem.actions.FindAction("Fire").IsPressed() && shootTimer > shootRate)
+        if (InputSystem.actions.FindAction("Fire")?.IsPressed() == true && shootTimer > shootRate)
         {
             shoot();
         }
 
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-    }
-
-    void sprint()
-    {
-        // Simple sprint with Left Shift (you can change to a proper Input Action later)
-        if (InputSystem.actions.FindAction("Sprint").IsPressed())
+        if (Camera.main != null)
         {
-            currentSpeed = speed * sprintMod;
-        }
-        else
-        {
-            currentSpeed = speed;
+            Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
         }
     }
 
     void jump()
     {
-        if (InputSystem.actions.FindAction("Jump").triggered && jumpCount < jumpMax)
+        if (InputSystem.actions.FindAction("Jump")?.triggered == true && jumpCount < jumpMax)
         {
-            playerVel.y = jumpSpeed;   // Note: You may want to increase this value (try 12-18)
+            playerVel.y = jumpSpeed;
             jumpCount++;
         }
     }
@@ -99,18 +113,75 @@ public class playerController : MonoBehaviour
     void shoot()
     {
         shootTimer = 0;
+        if (Camera.main == null) return;
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
         {
-            Debug.Log(hit.collider.name);
-
+            Debug.Log("Hit: " + hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
             if (dmg != null)
-            {
                 dmg.takeDamage(shootDamage);
-            }
         }
+    }
+
+    void staminaManagement()
+    {
+        if (!isDashing && InputSystem.actions.FindAction("Sprint")?.IsPressed() != true)
+        {
+            currentStamina = Mathf.Min(currentStamina + staminaRecoveryRate * Time.deltaTime, maxStamina);
+        }
+        currentStamina = Mathf.Max(currentStamina, 0f);
+    }
+
+    void sprint()
+    {
+        if (InputSystem.actions.FindAction("Sprint")?.IsPressed() == true && currentStamina > 5f && !isDashing)
+        {
+            currentSpeed = speed * sprintMod;
+            currentStamina -= sprintStaminaCost * Time.deltaTime;
+        }
+        else
+        {
+            currentSpeed = speed;
+        }
+    }
+
+    void dash()
+    {
+        if (InputSystem.actions.FindAction("Dash")?.triggered == true &&
+            currentStamina >= dashStaminaCost &&
+            dashCooldownTimer <= 0 &&
+            !isDashing)
+        {
+            isDashing = true;
+            currentStamina -= dashStaminaCost;
+            dashTimer = dashDuration;
+            dashCooldownTimer = dashCooldown;
+            Debug.Log("DASH ACTIVATED!");
+        }
+    }
+
+    void handleDash()
+    {
+        if (isDashing)
+        {
+            dashTimer -= Time.deltaTime;
+
+            Vector2 input = InputSystem.actions.FindAction("Move")?.ReadValue<Vector2>() ?? Vector2.zero;
+            Vector3 dashDirection = transform.right * input.x + transform.forward * input.y;
+
+            if (dashDirection.magnitude < 0.1f)
+                dashDirection = transform.forward;
+
+            controller.Move(dashDirection.normalized * dashSpeed * Time.deltaTime);
+
+            if (dashTimer <= 0f)
+                isDashing = false;
+        }
+
+        if (dashCooldownTimer > 0)
+            dashCooldownTimer -= Time.deltaTime;
     }
 
     public void takeDamage(int amount)
@@ -118,114 +189,7 @@ public class playerController : MonoBehaviour
         HP -= amount;
         if (HP <= 0)
         {
-            // gamemanager.instance.youLose();
             Debug.Log("Player Died!");
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //void Start()
-    //{
-    //    HPOrig = HP; 
-    //}
-
-    //void Update()
-    //{
-    //    movement();
-
-    //    sprint();
-    //}
-
-    //void movement()
-    //{
-    //    if (controller.isGrounded)
-    //    {
-    //        playerVel.y = 0;
-    //        jumpCount = 0;
-    //    }
-
-    //    moveDir = Input.GetAxis("Horizontal") * transform.right + Input.GetAxis("Vertical") * transform.forward;
-    //    controller.Move(moveDir.normalized * speed * Time.deltaTime);
-
-    //    jump();
-
-    //    controller.Move(playerVel * Time.deltaTime);
-    //    playerVel.y -= gravity * Time.deltaTime;
-
-    //    shootTimer += Time.deltaTime;
-    //    if (Input.GetButton("Fire1") && shootTimer > shootRate)
-    //    {
-
-    //        shoot();
-    //    }
-
-    //    Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * shootDist, Color.red);
-
-    //}
-
-    //void sprint()
-    //{
-    //    if (Input.GetButtonDown("Sprint"))
-    //    {
-    //        speed *= sprintMod;
-    //    }
-    //    else if (Input.GetButtonUp("Sprint"))
-    //    {
-    //        speed /= sprintMod;
-    //    }
-    //}
-
-    //void jump()
-    //{
-    //    if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
-    //    {
-    //        playerVel.y = jumpSpeed;
-    //        jumpCount++;
-    //    }
-    //}
-
-    //void shoot()
-    //{
-    //    shootTimer = 0;
-
-    //    RaycastHit hit;
-
-    //    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreLayer))
-    //    {
-
-    //        Debug.Log(hit.collider.name);
-
-    //        IDamage dmg = hit.collider.GetComponent<IDamage>();
-
-    //        if (dmg != null)
-    //        {
-    //            dmg.takeDamage(shootDamage);
-    //        }
-    //    }
-    //}
-
-    //public void takeDamage(int amount)
-    //{
-    //    HP -= amount;
-    //    if (HP <= 0)
-    //    {
-    //        gamemanager.instance.youLose();
-
-    //    }
-    //}
-
-
