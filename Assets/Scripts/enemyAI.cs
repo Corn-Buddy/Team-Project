@@ -10,7 +10,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] float speed;
     [SerializeField] float hitFlashTime = 0.1f;
 
-    Color colorOrig;
+    Color colorOrig; 
     Transform player;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
