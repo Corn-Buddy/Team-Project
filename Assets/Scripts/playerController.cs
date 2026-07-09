@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class playerController : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class playerController : MonoBehaviour
         dash();
         staminaManagement();
         handleDash();
+        rotation();
 
         // Debug (only when pressed, not every frame)
         if (InputSystem.actions.FindAction("Sprint")?.IsPressed() == true)
@@ -191,4 +193,18 @@ public class playerController : MonoBehaviour
             Debug.Log("Player Died!");
         }
     }
+    void rotation()
+{
+    Vector2 input = InputSystem.actions.FindAction("Move").ReadValue<Vector2>();
+
+    if (input.magnitude > 0.1f)
+    {
+        Vector3 moveDirection = transform.right * input.x + transform.forward * input.y;
+        
+        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+        
+        // Smoother & slower rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5f * Time.deltaTime);
+    }
+}
 }
