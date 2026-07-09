@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 12386, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.UIElements.SerializableJsonDictionary
-  m_Keys: []
-  m_Values: []
+  m_Keys:
+  - __PanelContainer__rootVisualContainer__search-right-splitter__view-data-key__UnityEngine.UIElements.TwoPaneSplitView
+  - __PanelContainer__rootVisualContainer__search-right-splitter__view-data-key__search-left-splitter__view-data-key__UnityEngine.UIElements.TwoPaneSplitView
+  m_Values:
+  - '{"m_FixedPaneDimension":160.0}'
+  - '{"m_FixedPaneDimension":120.0}'
