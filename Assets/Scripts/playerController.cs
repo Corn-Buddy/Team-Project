@@ -26,6 +26,7 @@ public class playerController : MonoBehaviour
     [Header("Stamina & Sprinting")]
     [SerializeField] float staminaRecoveryRate = 15f;
     [SerializeField] float sprintStaminaCost = 20f;
+    [SerializeField] float staminaRegenDelay = 1.2f;
 
     [Header("Dash")]
     [SerializeField] float dashSpeed = 25f;
@@ -127,12 +128,23 @@ public class playerController : MonoBehaviour
         }
     }
 
+    private float staminaRegenTimer = 0f;
+
     void staminaManagement()
     {
-        if (!isDashing && InputSystem.actions.FindAction("Sprint")?.IsPressed() != true)
+        if (InputSystem.actions.FindAction("Sprint")?.IsPressed() == true || isDashing)
+        {
+            staminaRegenTimer = staminaRegenDelay;   // Reset delay when using stamina
+        }
+        else if (staminaRegenTimer > 0)
+        {
+            staminaRegenTimer -= Time.deltaTime;
+        }
+        else
         {
             currentStamina = Mathf.Min(currentStamina + staminaRecoveryRate * Time.deltaTime, maxStamina);
         }
+
         currentStamina = Mathf.Max(currentStamina, 0f);
     }
 

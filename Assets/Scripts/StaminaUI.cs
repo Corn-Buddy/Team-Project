@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class StaminaUI : MonoBehaviour
 {
     [SerializeField] private Slider staminaSlider;
     [SerializeField] private playerController player;
+
+    [Header("Text")]
+    [SerializeField] private TextMeshProUGUI staminaText;
 
     [Header("Color Gradient")]
     [SerializeField] private Color fullColor = Color.green;
@@ -24,18 +28,20 @@ public class StaminaUI : MonoBehaviour
     {
         if (player == null || staminaSlider == null) return;
 
-        float staminaPercent = player.currentStamina / player.maxStamina; // normalized 0-1
+        float current = player.currentStamina;
+        float max = player.maxStamina;
 
-        staminaSlider.value = player.currentStamina;
+        staminaSlider.value = current;
 
-        // Smooth color gradient
-        if (staminaPercent > 0.5f)
-        {
-            fillImage.color = Color.Lerp(halfColor, fullColor, (staminaPercent - 0.5f) * 2f);
-        }
+        // Update Text
+        if (staminaText != null)
+            staminaText.text = "Stamina: " + $"{Mathf.Ceil(current)} / {max}";
+
+        // Color
+        float percent = current / max;
+        if (percent > 0.5f)
+            fillImage.color = Color.Lerp(halfColor, fullColor, (percent - 0.5f) * 2f);
         else
-        {
-            fillImage.color = Color.Lerp(lowColor, halfColor, staminaPercent * 2f);
-        }
+            fillImage.color = Color.Lerp(lowColor, halfColor, percent * 2f);
     }
 }
