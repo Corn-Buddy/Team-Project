@@ -552,6 +552,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NovaBurst_Weapon
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2efb9198ab1e4d38a035160b4ee0e6e9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 2efb9198ab1e4d38a035160b4ee0e6e9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.31078
