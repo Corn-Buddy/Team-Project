@@ -272,58 +272,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &4182775108676814033
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1374973437399283312}
-  - component: {fileID: 8301401793470288382}
-  m_Layer: 0
-  m_Name: EnemySpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1374973437399283312
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4182775108676814033}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.027931213, y: -0.06800002, z: 0.49921417}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8112398099157542644}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8301401793470288382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4182775108676814033}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8878dd380febfc24aa60c34f2f8bfa6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::enemySpawner
-  enemyPrefabs: []
-  spawnRate: 1.5
-  spawnDistance: 10
-  maxEnemies: 30
-  scaleInterval: 20
-  spawnRateDecrease: 0.15
-  minSpawnRate: 0.35
-  maxEnemyIncrease: 5
 --- !u!1 &4932189050763179211
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,16 +526,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8112398099157542644}
-  - component: {fileID: 2436130952098187266}
-  - component: {fileID: 5714339641436726326}
+  - component: {fileID: -4117027265238246111}
+  - component: {fileID: -7321430578510819266}
   - component: {fileID: 6986632289804971165}
   - component: {fileID: 6515721808002073225}
   - component: {fileID: 2417267289540732642}
-  - component: {fileID: -7755335081353147408}
-  - component: {fileID: -6713429454146493499}
+  - component: {fileID: 6109694511098111822}
   m_Layer: 7
   m_Name: FastEnemy
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -607,10 +554,9 @@ Transform:
   m_Children:
   - {fileID: 1559942487890406157}
   - {fileID: 4446749787455840186}
-  - {fileID: 1374973437399283312}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2436130952098187266
+--- !u!114 &-4117027265238246111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -619,28 +565,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 7791680660320909169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea369c32fb0b7e041b3f04366dca35c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::enemyAI
-  rb: {fileID: -7755335081353147408}
-  model: {fileID: 6515721808002073225}
-  HP: 1
-  speed: 4.25
-  hitFlashTime: 0.1
---- !u!114 &5714339641436726326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791680660320909169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccdf8d5c0a204ca4d905d2f9d1a31161, type: 3}
+  m_Script: {fileID: 11500000, guid: eb21a3b3e98b5e1428bed628d71324f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::enemyContactDamage
-  damageAmount: 2
-  damageRate: 1
+  damageAmount: 1
+  damageRate: 0.5
+--- !u!114 &-7321430578510819266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791680660320909169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e92fb3c9e023c844b51cc4e49c1c59d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::enemyAI
+  rb: {fileID: 6109694511098111822}
+  model: {fileID: 0}
+  HP: 50
+  speed: 3
+  hitFlashTime: 0.1
 --- !u!33 &6986632289804971165
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -674,7 +620,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: f85ef02e2c4c47940a0bc5277c817fbc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -713,7 +659,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -721,7 +667,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &-7755335081353147408
+--- !u!54 &6109694511098111822
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -743,31 +689,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
---- !u!136 &-6713429454146493499
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791680660320909169}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

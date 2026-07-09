@@ -1163,13 +1163,14 @@ MonoBehaviour:
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 0
-  maxStamina: 100
   staminaRecoveryRate: 15
   sprintStaminaCost: 20
+  staminaRegenDelay: 1.2
   dashSpeed: 25
   dashDuration: 0.2
   dashStaminaCost: 35
   dashCooldown: 1.2
+  maxStamina: 100
 --- !u!114 &2044760877
 MonoBehaviour:
   m_ObjectHideFlags: 0
