@@ -43,8 +43,7 @@ public class playerController : MonoBehaviour
     private float currentStamina;
     private float dashTimer;
     private float dashCooldownTimer;
-    private bool isDashing;
-
+    public bool isDashing { get; private set; }
     void Start()
     {
         if (controller == null)
