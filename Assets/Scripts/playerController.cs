@@ -24,7 +24,6 @@ public class playerController : MonoBehaviour
     [SerializeField] LayerMask ignoreLayer;
 
     [Header("Stamina & Sprinting")]
-    [SerializeField] float maxStamina = 100f;
     [SerializeField] float staminaRecoveryRate = 15f;
     [SerializeField] float sprintStaminaCost = 20f;
 
@@ -41,10 +40,12 @@ public class playerController : MonoBehaviour
     int HPOrig;
 
     private float currentSpeed;
-    private float currentStamina;
     private float dashTimer;
     private float dashCooldownTimer;
+    public float maxStamina = 100f;
     public bool isDashing { get; private set; }
+    public float currentStamina { get; private set; }
+
     void Start()
     {
         if (controller == null)
@@ -204,7 +205,7 @@ public class playerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
         
         // Smoother & slower rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5f * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 3f * Time.deltaTime);
     }
 }
 }
