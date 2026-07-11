@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;   // ← Add this
+using UnityEngine.InputSystem;  
 
 public class cameraFollow : MonoBehaviour
 {

@@ -3,8 +3,8 @@ using UnityEngine;
 public class DirectionPointer : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float distanceInFront = 1.2f;   // How far ahead the pointer sits
-    [SerializeField] private float heightAbove = 1.8f;       // How high it floats
+    [SerializeField] private float distanceInFront = 1.2f;   
+    [SerializeField] private float heightAbove = 1.8f;    
 
     private Transform player;
     void Start()
